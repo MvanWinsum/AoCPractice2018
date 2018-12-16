@@ -1,8 +1,4 @@
 import pprint
-import plotly.plotly as py
-import plotly.graph_objs as go
-import igraph
-from igraph import *
 pp = pprint.PrettyPrinter(indent=4)
 answer = 0
 with open('puzzle_input.txt') as input_file:
@@ -23,7 +19,6 @@ def get_next_number():
     global input_numbers
     if len(input_numbers) > 0:
         number = int(input_numbers.pop(0))
-        pp.pprint(number)
         return number
     return 0
 
@@ -45,6 +40,19 @@ def add_metadata(length):
     return metadata
 
 
+def parse_tree(tree):
+    values = {}
+    tree_value = 0
+    for metadata in tree[3]:
+        if tree[0] > 0 and metadata < tree[0]:
+            if metadata not in values:
+                values[metadata] = parse_tree(tree[2][metadata - 1])
+            tree_value += values[metadata]
+        else:
+            tree_value += metadata
+    return tree_value
+
+
 full_tree = make_tree()
-pp.pprint(full_tree)
+answer += parse_tree(full_tree)
 pp.pprint(answer)
