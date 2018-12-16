@@ -3,7 +3,7 @@ pp = pprint.PrettyPrinter(indent=4)
 parsed_workflow_entries = [[], []]
 ready_for_execution = {}
 need_prerequisite = {}
-action_flow = ''
+operation_flow = ''
 with open('puzzle_input.txt') as input_file:
     workflow_entries = [input_line.strip() for input_line in input_file]
 
@@ -32,7 +32,7 @@ def filter_prerequisite_actions(entries):
 
 
 def execute_action(action_to_execute):
-    global action_flow, need_prerequisite, ready_for_execution
+    global operation_flow, need_prerequisite, ready_for_execution
     action_flow += action_to_execute
     del ready_for_execution[action_to_execute]
     for action, prerequisites in need_prerequisite.iteritems():
@@ -52,4 +52,4 @@ pp.pprint(need_prerequisite)
 while len(ready_for_execution) > 0:
     action_to_execute = next(iter(ready_for_execution))
     execute_action(action_to_execute)
-pp.pprint(action_flow)
+pp.pprint(operation_flow)
