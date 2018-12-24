@@ -3,7 +3,6 @@ import collections
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
-actions = deque(['L', 'S', 'R'])
 curves = {}
 intersections = {}
 carts = {}
@@ -20,21 +19,27 @@ def find(s, ch):
 def parse_grid_line(grid_line, grid_index):
     # Parse Curves
     for curve in find(grid_line, '/'):
-        curves[grid_index] = {curve : '/'}
+        if grid_index not in curves:
+            curves[grid_index] = {}
+        curves[grid_index][curve] = '/'
     for curve in find(grid_line, '\\'):
-        curves[grid_index] = {curve : '\\'}
+        if grid_index not in curves:
+            curves[grid_index] = {}
+        curves[grid_index][curve] = '\\'
     # Parse Intersections
     for intersection in find(grid_line, '+'):
-        intersections[grid_index] = {intersection: '+'}
+        if grid_index not in intersections:
+            intersections[grid_index] = {}
+        intersections[grid_index][intersection] = '+'
     # Parse Carts
     for cart in find(grid_line, '>'):
-        carts[grid_index] = {cart: ['R', actions]}
+        carts[grid_index] = {cart: ['R', deque(['L', 'S', 'R'])]}
     for cart in find(grid_line, '<'):
-        carts[grid_index] = {cart: ['L', actions]}
+        carts[grid_index] = {cart: ['L', deque(['L', 'S', 'R'])]}
     for cart in find(grid_line, '^'):
-        carts[grid_index] = {cart: ['U', actions]}
-    for cart in find(grid_line, 'V'):
-        carts[grid_index] = {cart: ['D', actions]}
+        carts[grid_index] = {cart: ['U', deque(['L', 'S', 'R'])]}
+    for cart in find(grid_line, 'v'):
+        carts[grid_index] = {cart: ['D', deque(['L', 'S', 'R'])]}
 
 
 def sort_carts():
@@ -50,25 +55,27 @@ def parse_grid():
     sort_carts()
 
 
-def adjust_movement_curve(movement, curve):
+def adjust_movement_curve(cart, curve):
+    new_cart = ['', cart[1]]
     if curve == '/':
-        if movement == 'R':
-            return 'D'
-        if movement == 'D':
-            return 'L'
-        if movement == 'U':
-            return 'R'
-        if movement == 'L':
-            return 'U'
+        if cart[0] == 'R':
+            new_cart[0] = 'U'
+        if cart[0] == 'D':
+            new_cart[0] = 'L'
+        if cart[0] == 'U':
+            new_cart[0] = 'R'
+        if cart[0] == 'L':
+            new_cart[0] = 'D'
     else:
-        if movement == 'R':
-            return 'U'
-        if movement == 'D':
-            return 'R'
-        if movement == 'U':
-            return 'L'
-        if movement == 'L':
-            return 'D'
+        if cart[0] == 'R':
+            new_cart[0] = 'D'
+        if cart[0] == 'D':
+            new_cart[0] = 'R'
+        if cart[0] == 'U':
+            new_cart[0] = 'L'
+        if cart[0] == 'L':
+            new_cart[0] = 'U'
+    return new_cart
 
 
 def adjust_movement_intersection(cart):
@@ -93,7 +100,8 @@ def adjust_movement_intersection(cart):
             cart[0] = 'R'
         if queue[0] == 'R':
             cart[0] = 'L'
-    cart[1] = queue.rotate(-1)
+    queue.rotate(-1)
+    cart[1] = queue
     return cart
 
 
@@ -114,19 +122,23 @@ def run_tick():
     ticked_carts = {}
     for y, xcart in carts.iteritems():
         for x, cart in xcart.iteritems():
-            if y in curves and x in curves[y]:
-                carts[y][x][0] = adjust_movement_curve(cart[0], curves[y][x])
-            if y in intersections and x in intersections[y]:
-                carts[y][x] = adjust_movement_intersection(cart)
             new_y, new_x = get_new_cart_coordinates(carts[y][x], y, x)
-            if new_y in carts and new_x in carts[y]:
+            if new_y in curves and new_x in curves[new_y]:
+                new_cart = adjust_movement_curve(cart, curves[new_y][new_x])
+                carts[y][x] = new_cart
+            if new_y in intersections and new_x in intersections[new_y]:
+                carts[y][x] = adjust_movement_intersection(cart)
+            if new_y in ticked_carts and new_x in ticked_carts[new_y]:
                 first_crash = str(new_x) + ',' + str(new_y)
                 return
-            ticked_carts[new_y] = {new_x: cart}
+            if new_y not in ticked_carts:
+                ticked_carts[new_y] = {}
+            ticked_carts[new_y][new_x] = carts[y][x]
     carts = ticked_carts
 
 
 parse_grid()
+pp.pprint(carts)
 while len(first_crash) == 0:
     run_tick()
     sort_carts()
