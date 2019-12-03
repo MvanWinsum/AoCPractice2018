@@ -23,11 +23,6 @@ def walk_steps(steps):
 
 
 def check_intersections(wire_a, wire_b):
-    # intersections = []
-    # for coordinate in wire_a:
-    #     if coordinate in wire_b:
-    #         print('Intersection: ' + coordinate)
-    #         intersections.append(coordinate)
     return set(wire_a) & set(wire_b)
 
 
@@ -42,10 +37,7 @@ def closest_intersection(intersections):
 
 with open('puzzle_input.txt') as input_file:
     wires = [x.replace("\n", "").split(',') for x in input_file.readlines()]
-    print(len(wires))
     wire_a = walk_steps(wires[0])
-    print(len(wire_a))
     wire_b = walk_steps(wires[1])
     intersections = check_intersections(wire_a, wire_b)
-print(intersections)
 print(closest_intersection(intersections))
