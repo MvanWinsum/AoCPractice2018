@@ -1,7 +1,7 @@
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
 answer = 0
-generations = 20
+generations = 50000000000
 with open('initial_state.txt') as input_file:
     plant_state = [list(input_line) for input_line in input_file][0]
 
@@ -28,7 +28,6 @@ def get_plant_configuration(index):
 
 def run_generation():
     global plant_state
-    index = 0
     plant_state = ['.', '.'] + plant_state
     plant_state.extend(['.', '.'])
     read_state = ['.', '.'] + plant_state

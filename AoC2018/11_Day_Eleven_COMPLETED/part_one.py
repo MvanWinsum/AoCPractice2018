@@ -23,7 +23,7 @@ def create_grid(max_x, max_y):
 
 
 def calculate_grid_level():
-    for coord, score in grid.iteritems():
+    for coord, score in grid.items():
         coord_pair = coord.split(',')
         grid[coord] = calculate_power_level(coord_pair[0], coord_pair[1])
 
@@ -42,7 +42,7 @@ def get_square_score(position):
 
 def get_highest_square():
     global highest_power, highest_coord, grid
-    for coord, score in grid.iteritems():
+    for coord, score in grid.items():
         square_score = get_square_score(coord)
         if square_score > highest_power:
             highest_power = square_score

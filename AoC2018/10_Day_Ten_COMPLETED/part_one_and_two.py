@@ -43,7 +43,7 @@ def calculate_grid_area(seconds_elapsed=1):
 
 
 def move_second(seconds_elapsed=1):
-    for light, movement in light_list.iteritems():
+    for light, movement in light_list.items():
         light_list[light] = apply_movement(movement, seconds_elapsed)
 
 
@@ -51,7 +51,7 @@ def move_second(seconds_elapsed=1):
 #     area_list.append(calculate_grid_area())
 #     grid_area = [[0, 0], [0, 0]]
 move_second(10454)
-for light, movement in light_list.iteritems():
+for light, movement in light_list.items():
     scatter_list[0].append(movement[0][0])
     scatter_list[1].append(movement[0][1])
 # lowest = 0

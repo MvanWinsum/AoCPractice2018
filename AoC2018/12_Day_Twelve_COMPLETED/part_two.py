@@ -46,7 +46,7 @@ def calculate_score(generation):
 for generation in range(generations):
     run_generation()
     calculate_score(generation)
-
+    print(score_deltas)
 
 plt.plot(scores)
 plt.show()

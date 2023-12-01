@@ -16,7 +16,7 @@ with open('puzzle_input.txt') as input_file:
 
 def get_edge_claims():
     edge_claims = []
-    for claimant, claim in claim_list.iteritems():
+    for claimant, claim in claim_list.items():
         if int(claim[0]) == matrix_width or int(claim[1]) == matrix_height:
             edge_claims.append(claim)
     return edge_claims
@@ -25,7 +25,7 @@ def get_edge_claims():
 def set_matrix_dimensions():
     global matrix_width
     global matrix_height
-    for claimant, claim in claim_list.iteritems():
+    for claimant, claim in claim_list.items():
         if int(claim[0]) > matrix_width:
             matrix_width = int(claim[0])
         if int(claim[1]) > matrix_height:
@@ -49,9 +49,9 @@ def closest_claim(coordinate, distance):
 
 
 def calculate_closest_claim_for_points():
-    for coordinate, claim_distances in matrix.iteritems():
+    for coordinate, claim_distances in matrix.items():
         split_coordinate = coordinate.split(',')
-        for claimant, claim in claim_list.iteritems():
+        for claimant, claim in claim_list.items():
             distance = abs(int(split_coordinate[0]) - int(claim[1])) + abs(int(split_coordinate[1]) - int(claim[1]))
             claim_distance_rank = closest_claim(matrix[coordinate], distance)
             if claim_distance_rank == 0:
@@ -62,7 +62,7 @@ def calculate_closest_claim_for_points():
 
 def filter_matrix_coordinates(edge_claims):
     filtered_matrix = {}
-    for coordinate, closest_claims in matrix.iteritems():
+    for coordinate, closest_claims in matrix.items():
         if len(closest_claims) == 1 and closest_claims[0][0] not in edge_claims:
             filtered_matrix[coordinate] = closest_claims
     return filtered_matrix
@@ -70,7 +70,7 @@ def filter_matrix_coordinates(edge_claims):
 
 def calculate_claim_areas(filter_matrix):
     global claim_areas
-    for coordinate, closest_claim in filter_matrix.iteritems():
+    for coordinate, closest_claim in filter_matrix.items():
         coordinate_pair = coordinate.split(',')
         claim_areas[closest_claim[0][0]] = claim_areas.get(closest_claim[0][0], 0) + 1
         if coordinate_pair[0] == (matrix_width - 1) or coordinate_pair[1] == (matrix_height - 1):
@@ -79,7 +79,7 @@ def calculate_claim_areas(filter_matrix):
 
 def convert_to_visualization_data(filter_matrix):
     converted_matrix = []
-    for coordinate, details in filter_matrix.iteritems():
+    for coordinate, details in filter_matrix.items():
         coordinate_pair = coordinate.split(',')
         converted_matrix.append([coordinate_pair[0], coordinate_pair[1], details[0][0]])
     return converted_matrix
